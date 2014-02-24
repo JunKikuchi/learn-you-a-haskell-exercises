@@ -3,8 +3,8 @@
 --          sumInts 1 3 = 6
 sumInts :: Int -> Int -> Int
 sumInts a b
-    | a < b     = a + (sumInts (succ a) b)
-    | otherwise = a
+    | a > b     = 0
+    | otherwise = a + (sumInts (succ a) b)
 
 -- Define a square function
 sq :: Int -> Int
@@ -13,17 +13,15 @@ sq x = x * x
 -- Sum the squares between two numbers. This function should be similar to the sumInts function
 sumSquares :: Int -> Int -> Int
 sumSquares a b
-    | a < b     = val + (sumSquares (succ a) b)
-    | otherwise = val
-        where val = sq a
+    | a > b     = 0
+    | otherwise = (sq a) + (sumSquares (succ a) b)
 
 -- Define a higher order sum function which accepts an (Int -> Int) function to apply to all integers between two values.
 -- Again this should look similar to the sumInts and sumSquares functions
 higherOrderSum :: (Int -> Int) -> Int -> Int -> Int
 higherOrderSum intApplication a b
-    | a < b     = val + (higherOrderSum intApplication (succ a) b)
-    | otherwise = val
-        where val = intApplication a
+    | a > b     = 0
+    | otherwise = (intApplication a) + (higherOrderSum intApplication (succ a) b)
 
 -- Define the square sum in terms of higherOrderSum
 hoSumSquares :: Int -> Int -> Int
