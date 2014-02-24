@@ -45,12 +45,11 @@ hoSumInts = higherOrderSum id
 --  - A function to apply to each value, op :: Int -> Int
 --  - A function to apply between each value, f :: Int -> Int -> Int
 --  - A value to return in the base case when a > b, z :: Int
-higherOrderSequenceApplication :: (Int -> Int -> Int) -> (Int -> Int) -> Int -> Int -> Int
-higherOrderSequenceApplication f op a b
-    | a < b     = (f) val (higherOrderSequenceApplication f op (succ a) b)
-    | otherwise = val
-        where val = op a
+higherOrderSequenceApplication :: Int -> (Int -> Int -> Int) -> (Int -> Int) -> Int -> Int -> Int
+higherOrderSequenceApplication base f op a b
+    | a > b     = base
+    | otherwise = (f) (op a) (higherOrderSequenceApplication base f op (succ a) b)
 
 -- Define a factorial method using the higherOrderSequenceAppliction
 hoFactorial :: Int -> Int
-hoFactorial = higherOrderSequenceApplication (*) id 1
+hoFactorial = higherOrderSequenceApplication 1 (*) id 1
