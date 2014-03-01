@@ -11,6 +11,7 @@
  -
  - Uncomment the following declarations to complete the implementation, and provide an implementation for instance Show Card
  -}
+import Data.List
 
 data Suit = Clubs | Diamonds | Hearts | Spades deriving (Eq, Ord, Show)
 data Digit = Two | Three | Four | Five | Six | Seven | Eight | Nine | Jack | Queen | King | Ace deriving (Eq, Ord, Show)
@@ -37,7 +38,7 @@ data Coin = Heads | Tails deriving (Eq)
 
 -- Implement Hand for Coin, where play returns true if there are ten heads in a row in the list
 instance Hand Coin where
-	play = (== 10) . length . filter (== Heads)
+	play = isInfixOf (take 10 $ repeat Heads)
 
 -- Have a play with implementing Hand for some other types, for instance Int and Bool
 instance Hand Int where
