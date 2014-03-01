@@ -44,7 +44,7 @@ instance Hand Int where
     play = any (isPrime . abs)
         where
             isPrime 1 = True
-            isPrime n = let x = abs n in (factors x) == [1, x]
+            isPrime n = (factors n) == [1, n]
             factors n = [x | x <- [1..n], mod n x == 0]
 {--
 *Main> play ([1,3,5]::[Int])
