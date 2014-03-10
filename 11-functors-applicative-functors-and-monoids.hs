@@ -15,16 +15,21 @@ combineLists Empty a = a
 combineLists (Value a list) b = Value a $ combineLists list b
 
 -- Make our list a Monoid
-instance Monad List where
-    return a = Value a Empty
-    Empty        >>= f = Empty
-    Value a list >>= f = combineLists (f a) (list >>= f)
+instance Monoid (List a) where
+    mempty  = Empty
+    mappend = combineLists
 
 -- Make our list an Applicative
 instance Applicative List where
     pure a = Value a Empty
     Empty      <*> _  = Empty
     Value f fx <*> xs = combineLists (fmap f xs) (fx <*> xs)
+
+-- Make our list a Monad
+instance Monad List where
+    return a = Value a Empty
+    Empty        >>= f = Empty
+    Value a list >>= f = combineLists (f a) (list >>= f)
 
 -- Make sure that the List obeys the laws for Applicative and Monoid
 {--
@@ -51,6 +56,35 @@ Value "2" (Value "3" (Value "4" Empty))
 Value "2" (Value "3" (Value "4" Empty))
 *Main> fmap show (fmap (+1) (Value 1 $ Value 2 $ Value 3 Empty))
 Value "2" (Value "3" (Value "4" Empty))
+
+= モノイド則 =
+[mempty `mappend` x = x]
+*Main> mempty `mappend` Empty
+Empty
+*Main> mempty `mappend` (Value 1 Empty)
+Value 1 Empty
+
+[x `mappend` mempty = x]
+*Main> Empty `mappend` mempty
+Empty
+*Main> (Value 1 Empty) `mappend` mempty
+Value 1 Empty
+
+[(x `mappend` y) `mappend` z = x `mappend` (y `mappend` z)]
+*Main> (Empty `mappend` Empty) `mappend` Empty
+Empty
+*Main> Empty `mappend` (Empty `mappend` Empty)
+Empty
+
+*Main> (Value 1 Empty `mappend` Value 2 Empty) `mappend` Value 3 Empty
+Value 1 (Value 2 (Value 3 Empty))
+*Main> Value 1 Empty `mappend` (Value 2 Empty `mappend` Value 3 Empty)
+Value 1 (Value 2 (Value 3 Empty))
+
+*Main> (Empty `mappend` Value 2 Empty) `mappend` Value 3 Empty
+Value 2 (Value 3 Empty)
+*Main> Empty `mappend` (Value 2 Empty `mappend` Value 3 Empty)
+Value 2 (Value 3 Empty)
 
 = アプリカティブ則 =
 [pure f <*> x = fmap f x]
